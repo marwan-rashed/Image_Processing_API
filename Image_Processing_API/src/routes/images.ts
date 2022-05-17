@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import validate from '../middlewares/validation';
-import Files from '../services/imgProcessing';
+import { getAllImages, isThumbExist, newThumb } from '../services/images';
 
 const router = express.Router();
 
@@ -10,17 +10,17 @@ router.get(
     async (req: Request, res: Response) => {
         const { filename, width, height } = req.query;
 
-        const images = await Files.getAvailableImages();
+        const images = await getAllImages();
 
         if(typeof filename !== 'string' || !images.includes(filename)) {
             return res.status(400).end('Please enter a valid file name !');
         } else {
             if (typeof width == 'string' && typeof height == 'string') {
-                const exist = await Files.thumbIsExist({ filename, width: (parseInt(width)), height: (parseInt(height)) });
+                const exist = await isThumbExist(filename, (parseInt(width)), (parseInt(height)));
                 if(exist) {
                     return res.status(200).sendFile(exist);
                 } else {
-                    const thumb = await Files.createThumb({ filename, width: (parseInt(width)), height: (parseInt(height)) });
+                    const thumb = await newThumb(filename, (parseInt(width)), (parseInt(height)));
                     if(thumb) {
                         return res.status(200).sendFile(thumb);
                     } else {

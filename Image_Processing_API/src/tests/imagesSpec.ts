@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import Files from '../services/imgProcessing';
+import { getAllImages, newThumb, thumbsPath } from '../services/images';
 
 describe('Image processing tests', (): void => {
     it('returns all valid files', async (): Promise<void> => {
-        const images = await Files.getAvailableImages();
+        const images = await getAllImages();
 
         expect(images).toEqual(['encenadaport',
         'fjord',
@@ -14,14 +14,10 @@ describe('Image processing tests', (): void => {
     });
 
     it('creates new thumbnail', async (): Promise<void> => {
-        const thumbPath = await Files.createThumb({
-            filename: 'fjord',
-            width: 200,
-            height: 200,
-        });
+        const thumbPath = await newThumb('fjord', 200, 200);
 
         expect(thumbPath).toBe(path.resolve(
-            Files.thumbImagePath,
+            thumbsPath,
             `fjord_200_200.jpg`
         ));
     });
@@ -29,7 +25,7 @@ describe('Image processing tests', (): void => {
 
 afterAll(async (): Promise<void> => {
     const testPath: string = path.resolve(
-        Files.thumbImagePath,
+        thumbsPath,
         'fjord_200_200.jpg'
     );
 

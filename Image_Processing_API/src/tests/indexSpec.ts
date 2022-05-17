@@ -2,7 +2,7 @@ import app from '../index';
 import supertest from 'supertest';
 import path from 'path';
 import { promises as fs } from 'fs';
-import Files from '../services/imgProcessing';
+import { thumbsPath } from '../services/images';
 
 const request = supertest(app);
 
@@ -40,7 +40,7 @@ describe('End-Points Tests', (): void => {
 
 afterAll(async (): Promise<void> => {
     const testPath: string = path.resolve(
-        Files.thumbImagePath,
+        thumbsPath,
         'fjord_200_200.jpg'
     );
 
